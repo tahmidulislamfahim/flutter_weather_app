@@ -7,25 +7,25 @@ class WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get gradient based on weather type
     final gradientColors = _getGradient(weather.mainCondition);
 
     return AnimatedContainer(
-      duration: const Duration(seconds: 2),
+      key: ValueKey(weather.cityName),
+      duration: const Duration(milliseconds: 800),
       curve: Curves.easeInOut,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: gradientColors,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
@@ -35,27 +35,27 @@ class WeatherCard extends StatelessWidget {
           Text(
             weather.cityName,
             style: const TextStyle(
-              fontSize: 28,
+              fontSize: 30,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 6),
           Text(
-            weather.mainCondition.capitalize(),
-            style: const TextStyle(fontSize: 20, color: Colors.white70),
+            StringCap(weather.mainCondition).capitalize(),
+            style: const TextStyle(fontSize: 18, color: Colors.white70),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Image.network(
             'https://openweathermap.org/img/wn/${weather.icon}@2x.png',
-            width: 100,
-            height: 100,
+            width: 110,
+            height: 110,
           ),
           const SizedBox(height: 8),
           Text(
             '${weather.temperatureCelsius}°C',
             style: const TextStyle(
-              fontSize: 40,
+              fontSize: 48,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -64,13 +64,17 @@ class WeatherCard extends StatelessWidget {
             'Feels like ${weather.feelsLikeC}°C',
             style: const TextStyle(color: Colors.white70),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _infoTile(Icons.water_drop, '${weather.humidity}%', Colors.white),
-              const SizedBox(width: 16),
-              _infoTile(Icons.air, '${weather.windSpeed} m/s', Colors.white),
+              const SizedBox(width: 20),
+              _infoTile(
+                Icons.air_rounded,
+                '${weather.windSpeed} m/s',
+                Colors.white,
+              ),
             ],
           ),
         ],
@@ -83,7 +87,10 @@ class WeatherCard extends StatelessWidget {
       children: [
         Icon(icon, size: 20, color: color),
         const SizedBox(width: 4),
-        Text(value, style: TextStyle(color: color)),
+        Text(
+          value,
+          style: TextStyle(color: color, fontWeight: FontWeight.w500),
+        ),
       ],
     );
   }
@@ -103,9 +110,14 @@ class WeatherCard extends StatelessWidget {
     } else if (condition.contains('mist') ||
         condition.contains('fog') ||
         condition.contains('haze')) {
-      return [Colors.grey.shade500, Colors.grey.shade300];
+      return [Colors.grey.shade600, Colors.grey.shade300];
     } else {
       return [Colors.blue.shade400, Colors.lightBlueAccent.shade200];
     }
   }
+}
+
+extension StringCap on String {
+  String capitalize() =>
+      isEmpty ? this : '${this[0].toUpperCase()}${substring(1)}';
 }

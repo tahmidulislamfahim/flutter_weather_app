@@ -18,6 +18,18 @@ A simple Flutter weather demo app that fetches and displays weather information 
 - assets/images/launcher_icon.png — launcher icon image
 - .env — environment file with API key (not checked in)
 
+## One Call API (important note)
+The OpenWeather One Call API was updated to v3.0 and now requires an active billing-enabled account (credit card) to access hourly/advanced endpoints. Because of this change, this app does NOT use the paid One Call v3 hourly data and is implemented to avoid endpoints that require a paid plan.
+
+If you have a paid OpenWeather account and want to enable One Call v3 features (hourly/alerts/etc.):
+- Add/verify billing on your OpenWeather account.
+- Update your API requests in lib/services/weather_service.dart to use the v3 endpoints and the required parameters.
+- Ensure your .env contains the authorized key and restart the app.
+
+Alternative approaches if you don't want to enable billing:
+- Use the free Current Weather and 5 day / 3 hour Forecast endpoints (used here).
+- Switch to other free providers that offer hourly data without billing (check their quotas and terms).
+
 ## Prerequisites
 - Flutter SDK (stable)
 - Android Studio / Xcode toolchains for device/emulator
@@ -60,6 +72,7 @@ Do not commit `.env` to version control.
   flutter pub get
   flutter pub run flutter_launcher_icons:main
 - If missing API key, requests will fail — verify `.env` and restart the app.
+- If you need hourly data but don't want to enable billing, consider switching to a different provider or using cached/derived hourly estimations from available free endpoints.
 
 ## Contributing
 - Open issues/pull requests.
