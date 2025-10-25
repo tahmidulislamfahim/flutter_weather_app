@@ -1,7 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_app/services/weather_service.dart';
+import 'package:flutter_weather_app/widgets/build_error.dart';
+import 'package:flutter_weather_app/widgets/build_info_bar.dart';
 import 'package:flutter_weather_app/widgets/weather_card.dart';
 import 'package:flutter_weather_app/models/weather_data.dart';
 
@@ -69,7 +69,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      floatingActionButton: _buildFloatingButton(),
+      floatingActionButton: buildFloatingButton(),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -85,7 +85,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
-                _buildSearchRow(),
+                buildSearchRow(),
                 const SizedBox(height: 25),
                 Expanded(
                   child: AnimatedSwitcher(
@@ -93,16 +93,16 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                     child: _loading
                         ? const Center(child: CircularProgressIndicator())
                         : _error != null
-                        ? _buildError(isDark)
+                        ? BuildError(error: _error, isDark: isDark)
                         : _weather != null
                         ? Column(
                             children: [
                               Expanded(child: WeatherCard(weather: _weather!)),
                               const SizedBox(height: 20),
-                              _buildInfoBar(),
+                              BuildInfoBar(weather: _weather),
                             ],
                           )
-                        : _emptyState(),
+                        : emptyState(),
                   ),
                 ),
               ],
@@ -114,7 +114,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   }
 
   /// 🌍 Search bar with rounded design
-  Widget _buildSearchRow() {
+  Widget buildSearchRow() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
@@ -150,86 +150,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
     );
   }
 
-  /// ❌ Error widget
-  Widget _buildError(bool isDark) {
-    return Center(
-      key: const ValueKey('error'),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: isDark
-              ? Colors.red.shade900.withOpacity(0.3)
-              : Colors.red.shade50,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Text(
-          'Error: $_error',
-          style: TextStyle(
-            color: isDark ? Colors.red[200] : Colors.red[800],
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-
-  /// 🌡️ Bottom info glass panel
-  Widget _buildInfoBar() {
-    if (_weather == null) return const SizedBox.shrink();
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.2)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _infoTile(
-                Icons.thermostat,
-                '${_weather!.temperatureCelsius}°C',
-                'Temp',
-              ),
-              _infoTile(Icons.water_drop, '${_weather!.humidity}%', 'Humidity'),
-              _infoTile(Icons.air, '${_weather!.windSpeed} m/s', 'Wind'),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _infoTile(IconData icon, String value, String label) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: Colors.white, size: 22),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 15,
-          ),
-        ),
-        Text(
-          label,
-          style: const TextStyle(color: Colors.white70, fontSize: 12),
-        ),
-      ],
-    );
-  }
-
   /// ☁️ Empty state
-  Widget _emptyState() {
+  Widget emptyState() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Center(
       key: const ValueKey('empty'),
@@ -268,7 +190,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   }
 
   /// 📍 Floating Location Button with glow
-  Widget _buildFloatingButton() {
+  Widget buildFloatingButton() {
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
